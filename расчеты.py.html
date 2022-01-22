@@ -1,0 +1,84 @@
+<html>
+<head>
+<title>расчеты.py</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cc7832;}
+.s1 { color: #a9b7c6;}
+.s2 { color: #808080;}
+.s3 { color: #6897bb;}
+</style>
+</head>
+<body bgcolor="#2b2b2b">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+расчеты.py</font>
+</center></td></tr></table>
+<pre><span class="s0">import </span><span class="s1">numpy </span><span class="s0">as </span><span class="s1">np</span>
+<span class="s0">import </span><span class="s1">math </span><span class="s0">as </span><span class="s1">mh</span>
+<span class="s2"># Пузырьковый режим</span>
+<span class="s1">p_L = int(input())</span>
+<span class="s1">lambda_L = int(input())</span>
+<span class="s1">p_g = int(input())</span>
+<span class="s1">m_L = int(input())</span>
+<span class="s1">m_g = int(input())</span>
+<span class="s1">g: float = </span><span class="s3">9.8</span>
+<span class="s1">teta: int = </span><span class="s3">90</span>
+<span class="s1">f_tr = int(input())</span>
+<span class="s1">v_s = int(input())</span>
+<span class="s1">d = int(input())</span>
+<span class="s1">q_L = int(input())</span>
+<span class="s1">A_p = int(input())</span>
+<span class="s2"># параметры двухфазного потока</span>
+<span class="s1">p_tr = p_L * lambda_L + p_g * (</span><span class="s3">1 </span><span class="s1">- lambda_L)</span>
+<span class="s1">m_tr = m_L * lambda_L + m_g * (</span><span class="s3">1 </span><span class="s1">- lambda_L)</span>
+<span class="s1">v_sL = q_L / A_p</span>
+<span class="s1">v_sg = </span><span class="s3">0.25 </span><span class="s1">* v_s + </span><span class="s3">0.333 </span><span class="s1">* v_sL</span>
+<span class="s1">v_tr = v_sL + v_sg</span>
+
+
+<span class="s2"># Пробковый режим</span>
+<span class="s1">beta = int(input())</span>
+<span class="s1">H_LLs = int(input())</span>
+<span class="s1">f_Ls = int(input())</span>
+<span class="s1">m_Ls = int(input())</span>
+<span class="s1">v_gtb = int(input())</span>
+<span class="s1">v_gLs = int(input())</span>
+<span class="s1">v_Ltb = int(input())</span>
+<span class="s1">H_Ltb = int(input())</span>
+<span class="s1">v_LLs = int(input())</span>
+<span class="s2"># параметры</span>
+<span class="s1">p_Ls = p_L * H_LLs + p_g * (</span><span class="s3">1 </span><span class="s1">- H_LLs)</span>
+<span class="s1">v_sg1 = beta * v_gtb * (</span><span class="s3">1 </span><span class="s1">- H_Ltb) + (</span><span class="s3">1 </span><span class="s1">- beta) * v_gLs * (</span><span class="s3">1 </span><span class="s1">- H_LLs)</span>
+<span class="s1">v_Ls1 = (</span><span class="s3">1 </span><span class="s1">- beta) * v_LLs * H_LLs - beta * v_Ltb * H_Ltb</span>
+<span class="s1">v_m = v_sg1 + v_Ls1</span>
+
+
+<span class="s2"># Эмульсионный режим</span>
+<span class="s1">C_0 = int(input())</span>
+<span class="s2"># параметры двухфазного потока</span>
+<span class="s1">v__sg = np.sin(teta) / (</span><span class="s3">4 </span><span class="s1">- C_0) * C_0 * v_sL + v_s</span>
+
+
+<span class="s2"># Кольцевой режим</span>
+<span class="s1">p_c = int(input())</span>
+<span class="s1">sigma_L = int(input())</span>
+<span class="s1">f_sc = int(input())</span>
+<span class="s1">q_g = int(input())</span>
+<span class="s1">delta: float = </span><span class="s3">0.1</span>
+<span class="s2"># параметры двухфазного потока</span>
+<span class="s1">v_sg3 = q_g / A_p</span>
+<span class="s1">v_kr = </span><span class="s3">10000 </span><span class="s1">* v_sg3 * m_g / sigma_L * (p_g / p_L) ** </span><span class="s3">0.5</span>
+<span class="s1">F_e = </span><span class="s3">1 </span><span class="s1">- mh.exp((-</span><span class="s3">0.125</span><span class="s1">)*(v_kr - </span><span class="s3">1.5</span><span class="s1">))</span>
+<span class="s1">v_sc = F_e * v_sL + v_sg3</span>
+<span class="s1">dp = f_sc * p_c * v_sc ** </span><span class="s3">2 </span><span class="s1">/ </span><span class="s3">2 </span><span class="s1">* d</span>
+<span class="s0">if </span><span class="s1">F_e &gt; </span><span class="s3">0.9</span><span class="s1">:</span>
+    <span class="s1">z = </span><span class="s3">1 </span><span class="s1">+ </span><span class="s3">300 </span><span class="s1">* delta</span>
+<span class="s0">else</span><span class="s1">:</span>
+    <span class="s1">z = </span><span class="s3">1 </span><span class="s1">+ </span><span class="s3">24 </span><span class="s1">* delta * (p_L / p_g) ** (</span><span class="s3">1 </span><span class="s1">/ </span><span class="s3">3</span><span class="s1">)</span>
+<span class="s1">dp_c = z / (</span><span class="s3">1 </span><span class="s1">- </span><span class="s3">2 </span><span class="s1">* delta) ** </span><span class="s3">5 </span><span class="s1">* dp + p_c * g * np.sin(teta)</span>
+<span class="s1">fi = dp_c - p_c * g * np.sin(teta) / dp</span>
+</pre>
+</body>
+</html>
